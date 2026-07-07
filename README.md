@@ -30,10 +30,12 @@ The People Department aims to offer employees a secure and user-friendly mobile 
 - **Flutter SDK**: `>= 3.41.6`
 - **Dart SDK**: `>= 3.11.4`
 
-To install the Flutter SDK, please follow the official guide for your operating system:
+To install the Flutter SDK (which includes the Dart SDK), please follow the official guide for your operating system:
 - [Windows](https://docs.flutter.dev/get-started/install/windows)
 - [macOS](https://docs.flutter.dev/get-started/install/macos)
 - [Linux](https://docs.flutter.dev/get-started/install/linux)
+
+*Note: The Dart SDK is bundled with Flutter. If you need to install Dart separately for any reason, you can follow the [Dart installation guide](https://dart.dev/get-dart).*
 
 After installation, verify your setup by running `flutter doctor` in your terminal.
 
