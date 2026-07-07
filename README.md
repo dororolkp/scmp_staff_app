@@ -25,13 +25,24 @@ The People Department aims to offer employees a secure and user-friendly mobile 
 - **Local DB**: `sqflite`
 - **Images**: `cached_network_image`
 
+## Prerequisites
+
+- **Flutter SDK**: `>= 3.41.6`
+- **Dart SDK**: `>= 3.11.4`
+
+To install the Flutter SDK, please follow the official guide for your operating system:
+- [Windows](https://docs.flutter.dev/get-started/install/windows)
+- [macOS](https://docs.flutter.dev/get-started/install/macos)
+- [Linux](https://docs.flutter.dev/get-started/install/linux)
+
+After installation, verify your setup by running `flutter doctor` in your terminal.
+
 ## How to Run
 
-1. Make sure you have Flutter installed and set up correctly.
-2. Clone this repository.
-3. Run `flutter pub get` to install all dependencies.
-4. Run `flutter run` to build and start the app on your emulator or connected device.
-5. Alternatively, if you want to run it on web, use `flutter run -d web` (Note: sqflite caching won't work on Web, but you can configure `sqflite_common_ffi_web` if needed. The app is optimized for mobile platforms as per instructions).
+1. Clone this repository and navigate to the project directory (`cd scmp_staff_app`).
+2. Run `flutter pub get` to install all dependencies.
+3. Run `flutter run` to build and start the app on your emulator or connected device.
+4. Alternatively, if you want to run it on web, use `flutter run -d web` (Note: sqflite caching won't work on Web, but you can configure `sqflite_common_ffi_web` if needed. The app is optimized for mobile platforms as per instructions).
 
 ## Testing
 
