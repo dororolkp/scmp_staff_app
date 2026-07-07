@@ -1,5 +1,5 @@
-import 'package:get_it/get_it.dart';
 import 'package:scmp_staff_app/core/services/api_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:scmp_staff_app/core/services/database_service.dart';
 import 'package:scmp_staff_app/repositories/auth_repository.dart';
 import 'package:scmp_staff_app/repositories/staff_repository.dart';
@@ -18,7 +18,7 @@ Future<void> setupInjection() async {
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepository(apiService: getIt(), dbService: getIt()),
+    () => AuthRepository(dbService: getIt()),
   );
   getIt.registerLazySingleton<StaffRepository>(
     () => StaffRepository(apiService: getIt(), dbService: getIt()),

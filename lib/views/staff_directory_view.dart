@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:scmp_staff_app/repositories/auth_repository.dart';
 import 'package:scmp_staff_app/viewmodels/staff_viewmodel.dart';
 import 'package:scmp_staff_app/di/injection.dart';
 import 'package:scmp_staff_app/views/login_view.dart';
-import 'package:scmp_staff_app/core/services/database_service.dart';
 
 class StaffDirectoryView extends StatelessWidget {
-  const StaffDirectoryView({Key? key}) : super(key: key);
+  const StaffDirectoryView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class StaffDirectoryView extends StatelessWidget {
 }
 
 class _StaffDirectoryContent extends StatefulWidget {
-  const _StaffDirectoryContent({Key? key}) : super(key: key);
+  const _StaffDirectoryContent({super.key});
 
   @override
   _StaffDirectoryContentState createState() => _StaffDirectoryContentState();
@@ -59,7 +59,7 @@ class _StaffDirectoryContentState extends State<_StaffDirectoryContent> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () async {
-            await getIt<DatabaseService>().clearToken();
+            await getIt<AuthRepository>().logout();
             if (mounted) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const LoginView()),

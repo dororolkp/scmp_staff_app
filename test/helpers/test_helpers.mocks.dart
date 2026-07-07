@@ -3,14 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:scmp_staff_app/core/services/api_service.dart' as _i2;
-import 'package:scmp_staff_app/core/services/database_service.dart' as _i3;
-import 'package:scmp_staff_app/repositories/auth_repository.dart' as _i5;
-import 'package:scmp_staff_app/repositories/staff_repository.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:scmp_staff_app/core/services/database_service.dart' as _i2;
+import 'package:scmp_staff_app/repositories/auth_repository.dart' as _i4;
+import 'package:scmp_staff_app/repositories/staff_repository.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,131 +26,104 @@ import 'package:scmp_staff_app/repositories/staff_repository.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeApiService_0 extends _i1.SmartFake implements _i2.ApiService {
-  _FakeApiService_0(Object parent, Invocation parentInvocation)
+class _FakeDatabaseService_0 extends _i1.SmartFake
+    implements _i2.DatabaseService {
+  _FakeDatabaseService_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDatabaseService_1 extends _i1.SmartFake
-    implements _i3.DatabaseService {
-  _FakeDatabaseService_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeStaffResponse_2 extends _i1.SmartFake implements _i4.StaffResponse {
-  _FakeStaffResponse_2(Object parent, Invocation parentInvocation)
+class _FakeStaffResponse_1 extends _i1.SmartFake implements _i3.StaffResponse {
+  _FakeStaffResponse_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
+class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
   MockAuthRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.ApiService get apiService =>
-      (super.noSuchMethod(
-            Invocation.getter(#apiService),
-            returnValue: _FakeApiService_0(
-              this,
-              Invocation.getter(#apiService),
-            ),
-          )
-          as _i2.ApiService);
-
-  @override
-  _i3.DatabaseService get dbService =>
+  _i2.DatabaseService get dbService =>
       (super.noSuchMethod(
             Invocation.getter(#dbService),
-            returnValue: _FakeDatabaseService_1(
+            returnValue: _FakeDatabaseService_0(
               this,
               Invocation.getter(#dbService),
             ),
           )
-          as _i3.DatabaseService);
+          as _i2.DatabaseService);
 
   @override
-  _i6.Future<String> login(String? email, String? password) =>
+  _i5.Future<String> login(String? email, String? password) =>
       (super.noSuchMethod(
             Invocation.method(#login, [email, password]),
-            returnValue: _i6.Future<String>.value(
-              _i7.dummyValue<String>(
+            returnValue: _i5.Future<String>.value(
+              _i6.dummyValue<String>(
                 this,
                 Invocation.method(#login, [email, password]),
               ),
             ),
           )
-          as _i6.Future<String>);
+          as _i5.Future<String>);
 
   @override
-  _i6.Future<String?> getToken() =>
+  _i5.Future<String?> getToken() =>
       (super.noSuchMethod(
             Invocation.method(#getToken, []),
-            returnValue: _i6.Future<String?>.value(),
+            returnValue: _i5.Future<String?>.value(),
           )
-          as _i6.Future<String?>);
+          as _i5.Future<String?>);
 
   @override
-  _i6.Future<void> logout() =>
+  _i5.Future<void> logout() =>
       (super.noSuchMethod(
             Invocation.method(#logout, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [StaffRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStaffRepository extends _i1.Mock implements _i4.StaffRepository {
+class MockStaffRepository extends _i1.Mock implements _i3.StaffRepository {
   MockStaffRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.ApiService get apiService =>
-      (super.noSuchMethod(
-            Invocation.getter(#apiService),
-            returnValue: _FakeApiService_0(
-              this,
-              Invocation.getter(#apiService),
-            ),
-          )
-          as _i2.ApiService);
-
-  @override
-  _i3.DatabaseService get dbService =>
+  _i2.DatabaseService get dbService =>
       (super.noSuchMethod(
             Invocation.getter(#dbService),
-            returnValue: _FakeDatabaseService_1(
+            returnValue: _FakeDatabaseService_0(
               this,
               Invocation.getter(#dbService),
             ),
           )
-          as _i3.DatabaseService);
+          as _i2.DatabaseService);
 
   @override
-  _i6.Future<_i4.StaffResponse> getStaffList(int? page) =>
+  _i5.Future<_i3.StaffResponse> getStaffList(int? page) =>
       (super.noSuchMethod(
             Invocation.method(#getStaffList, [page]),
-            returnValue: _i6.Future<_i4.StaffResponse>.value(
-              _FakeStaffResponse_2(
+            returnValue: _i5.Future<_i3.StaffResponse>.value(
+              _FakeStaffResponse_1(
                 this,
                 Invocation.method(#getStaffList, [page]),
               ),
             ),
           )
-          as _i6.Future<_i4.StaffResponse>);
+          as _i5.Future<_i3.StaffResponse>);
 
   @override
-  _i6.Future<String?> getToken() =>
+  _i5.Future<String?> getToken() =>
       (super.noSuchMethod(
             Invocation.method(#getToken, []),
-            returnValue: _i6.Future<String?>.value(),
+            returnValue: _i5.Future<String?>.value(),
           )
-          as _i6.Future<String?>);
+          as _i5.Future<String?>);
 }

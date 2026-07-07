@@ -1,5 +1,6 @@
 import 'package:scmp_staff_app/core/services/api_service.dart';
 import 'package:scmp_staff_app/core/services/database_service.dart';
+import 'package:scmp_staff_app/core/services/jwt_token_service.dart';
 import 'package:scmp_staff_app/models/staff.dart';
 
 class StaffResponse {
@@ -13,56 +14,156 @@ class StaffResponse {
 class StaffRepository {
   final ApiService apiService;
   final DatabaseService dbService;
+  static const int _pageSize = 6;
 
   StaffRepository({required this.apiService, required this.dbService});
 
   Future<StaffResponse> getStaffList(int page) async {
+    await _ensureAuthorized();
+    final safePage = page < 1 ? 1 : page;
     try {
-      final response = await apiService.get('/users?page=$page');
-      
-      if (response.data != null && response.data['data'] != null) {
-        final List<dynamic> jsonList = response.data['data'];
-        final totalPages = response.data['total_pages'];
-        final currentPage = response.data['page'];
-        
-        final staffList = jsonList.map((json) => Staff.fromJson(json)).toList();
-        
-        // Cache to database if it's the first page
-        if (page == 1) {
-          final db = await dbService.database;
-          await db.delete('staff'); // clear old cache
-          for (var staff in staffList) {
-            await db.insert('staff', staff.toJson());
-          }
-        }
+      final response = await apiService.get(
+        '/users',
+        queryParameters: {'page': safePage},
+      );
+      final data = response.data;
+      if (data is! Map) {
+        throw Exception('Unexpected staff API response');
+      }
 
-        return StaffResponse(
-          data: staffList,
-          totalPages: totalPages,
-          page: currentPage,
-        );
-      } else {
-        throw Exception("Invalid response format");
+      final rawData = (data['data'] as List<dynamic>? ?? const [])
+          .map((row) => Map<String, Object?>.from(row as Map))
+          .toList();
+      final currentPage = (data['page'] as int?) ?? safePage;
+      final perPage = (data['per_page'] as int?) ?? _pageSize;
+      final total = (data['total'] as int?) ?? rawData.length;
+      final totalPages = (data['total_pages'] as int?) ?? 1;
+
+      await dbService.upsertStaffRecords(rawData);
+      await dbService.saveStaffListMeta(
+        page: currentPage,
+        perPage: perPage,
+        total: total,
+        totalPages: totalPages,
+      );
+
+      return StaffResponse(
+        data: rawData.map(Staff.fromJson).toList(),
+        totalPages: totalPages,
+        page: currentPage,
+      );
+    } catch (_) {
+      final maps = await dbService.getStaffPage(
+        page: safePage,
+        pageSize: _pageSize,
+      );
+      if (maps.isEmpty) {
+        rethrow;
       }
-    } catch (e) {
-      // If error occurs on page 1, try to load from cache
-      if (page == 1) {
-        final db = await dbService.database;
-        final maps = await db.query('staff');
-        if (maps.isNotEmpty) {
-          final staffList = maps.map((map) => Staff.fromJson(map)).toList();
-          return StaffResponse(
-            data: staffList,
-            totalPages: 1, // Assume 1 page for cached data
-            page: 1,
-          );
-        }
-      }
-      rethrow;
+
+      final meta = await dbService.getStaffListMeta();
+      final totalPages = (meta?['total_pages'] as int?) ??
+          ((await dbService.getStaffCount()) / _pageSize).ceil();
+      return StaffResponse(
+        data: maps.map(Staff.fromJson).toList(),
+        totalPages: totalPages,
+        page: safePage,
+      );
     }
   }
 
   Future<String?> getToken() async {
-    return await dbService.getToken();
+    final session = await dbService.getSession();
+    final token = session?['token'] as String?;
+    if (token == null || token.isEmpty) {
+      return null;
+    }
+
+    final payload = JwtTokenService.verifyToken(token);
+    final sessionEmail = session?['email'] as String?;
+    if (payload == null || sessionEmail == null || payload['email'] != sessionEmail) {
+      await dbService.clearToken();
+      return null;
+    }
+    return token;
+  }
+
+  Future<String> getDatabasePath() {
+    return dbService.getDatabasePath();
+  }
+
+  Future<List<Staff>> getAllStaff() async {
+    await _ensureAuthorized();
+    final maps = await dbService.getAllStaff();
+    return maps.map(Staff.fromJson).toList();
+  }
+
+  Future<Staff?> getStaffById(int id) async {
+    await _ensureAuthorized();
+    final map = await dbService.getStaffById(id);
+    if (map == null) {
+      return null;
+    }
+    return Staff.fromJson(map);
+  }
+
+  Future<Staff> createStaff({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String avatar,
+  }) async {
+    await _ensureAuthorized();
+    final id = await dbService.createStaff({
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'avatar': avatar,
+    });
+    return Staff(
+      id: id,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      avatar: avatar,
+    );
+  }
+
+  Future<bool> updateStaff(Staff staff) {
+    return _authorizedUpdateStaff(staff);
+  }
+
+  Future<bool> deleteStaff(int id) {
+    return _authorizedDeleteStaff(id);
+  }
+
+  Future<bool> _authorizedUpdateStaff(Staff staff) async {
+    await _ensureAuthorized();
+    return dbService.updateStaff(staff.toJson());
+  }
+
+  Future<bool> _authorizedDeleteStaff(int id) async {
+    await _ensureAuthorized();
+    return dbService.deleteStaff(id);
+  }
+
+  Future<void> _ensureAuthorized() async {
+    final session = await dbService.getSession();
+    final token = session?['token'] as String?;
+    if (token == null || token.isEmpty) {
+      throw Exception('Unauthorized access. Please log in first.');
+    }
+
+    final payload = JwtTokenService.verifyToken(token);
+    if (payload == null) {
+      await dbService.clearToken();
+      throw Exception('Session expired. Please log in again.');
+    }
+
+    final sessionEmail = session?['email'] as String?;
+    if (sessionEmail == null || payload['email'] != sessionEmail) {
+      await dbService.clearToken();
+      throw Exception('Invalid session. Please log in again.');
+    }
   }
 }

@@ -23,6 +23,22 @@ class Staff {
     );
   }
 
+  Staff copyWith({
+    int? id,
+    String? email,
+    String? firstName,
+    String? lastName,
+    String? avatar,
+  }) {
+    return Staff(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      avatar: avatar ?? this.avatar,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

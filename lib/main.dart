@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:scmp_staff_app/di/injection.dart';
+import 'package:scmp_staff_app/views/assignment_showcase_view.dart';
 import 'package:scmp_staff_app/views/login_view.dart';
 import 'package:scmp_staff_app/views/staff_directory_view.dart';
-import 'package:scmp_staff_app/core/services/database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupInjection();
-  
-  final dbService = getIt<DatabaseService>();
-  final token = await dbService.getToken();
-
-  runApp(MyApp(initialRoute: token != null ? '/staff' : '/login'));
+  runApp(const MyApp(initialRoute: '/login'));
 }
 
 class MyApp extends StatelessWidget {
   final String initialRoute;
 
-  const MyApp({Key? key, required this.initialRoute}) : super(key: key);
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: initialRoute,
       routes: {
+        '/showcase': (context) => const AssignmentShowcaseView(),
         '/login': (context) => const LoginView(),
         '/staff': (context) => const StaffDirectoryView(),
       },
